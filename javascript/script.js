@@ -248,7 +248,7 @@ var game = new Phaser.Game(
         counter -=1;
         if(counter <= 0)
         {
-            //setTimeout(function(){ alert('YOU WIN') }, 100);
+            setTimeout(function(){ alert('YOU WIN') }, 100);
         }
     }
     
