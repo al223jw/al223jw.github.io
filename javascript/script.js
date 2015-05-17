@@ -1,10 +1,15 @@
 "use strict";
 
 var pacmanImage;
+var speed = 50;
 var pinkGhost;
 var cyanGhost;
 var yellowGhost;
 var limeGhost;
+var panicPink;
+var panicCyan;
+var panicYellow;
+var panicLime;
 var pacmanFood;
 var superFood;
 var pacmanLife = 3;
@@ -60,23 +65,20 @@ var game = new Phaser.Game(
         this.ghosts = game.add.group();
         this.ghosts.enableBody = true;
         
-        pinkGhost = game.add.sprite(300, 150, 'pinkghost', 0, this.ghosts);
-        cyanGhost = game.add.sprite(490, 210, 'cyanghost', 0, this.ghosts);
-        yellowGhost = game.add.sprite(130, 400, 'yellowghost', 0, this.ghosts);
-        limeGhost = game.add.sprite(300, 200, 'limeghost', 0, this.ghosts);
+        pinkGhost = game.add.sprite(380, 310, 'pinkghost', 0, this.ghosts);
+        cyanGhost = game.add.sprite(410, 310, 'cyanghost', 0, this.ghosts);
+        yellowGhost = game.add.sprite(410, 270, 'yellowghost', 0, this.ghosts);
+        limeGhost = game.add.sprite(380, 270, 'limeghost', 0, this.ghosts);
+        
+        pinkGhost.body.velocity.y = speed;
+        cyanGhost.body.velocity.y = speed;
+        yellowGhost.body.velocity.y = speed;
+        limeGhost.body.velocity.y = speed;
         
         this.ghosts.setAll('body.immovable', true);
         
         game.physics.arcade.enable(pinkGhost, cyanGhost, yellowGhost, limeGhost);
-        
-        //Making panic ghost groop!
-        this.panicGhosts = game.add.group();
-        this.panicGhosts.enableBody = true;
-        
-        this.panicGhosts.setAll('body.immovable', true);
-        
-        game.physics.arcade.enable(pinkGhost, cyanGhost, yellowGhost, limeGhost);
-        
+       
         //Pac-Man Food!
         //Makes Groop of Food
         this.pacmanFoods = game.add.group();
@@ -195,6 +197,104 @@ var game = new Phaser.Game(
     
     function update()
     {
+        
+           //PinKGhost movment!
+           if (pinkGhost.y > 500 && pinkGhost.body.velocity.y == speed)
+           {
+               pinkGhost.body.velocity.y = 0;
+               pinkGhost.body.velocity.x = -speed;
+           }
+           if (pinkGhost.x < 230  && pinkGhost.body.velocity.x == -speed)
+           {
+               pinkGhost.body.velocity.x = 0;
+               pinkGhost.body.velocity.y = -speed;
+           }
+                 
+           if (pinkGhost.y < 30 && pinkGhost.body.velocity.y == -speed)
+           {
+               pinkGhost.body.velocity.y = 0;
+               pinkGhost.body.velocity.x = speed;
+           }
+           if(pinkGhost.x > 550 && pinkGhost.body.velocity.x == speed)
+           {
+               pinkGhost.body.velocity.x = 0;
+               pinkGhost.body.velocity.y = speed;
+           }
+           
+           
+           //CyanGhost Movment!
+            if (cyanGhost.y > 500 && cyanGhost.body.velocity.y == speed)
+           {
+               cyanGhost.body.velocity.y = 0;
+               cyanGhost.body.velocity.x = speed;
+           }
+           if (cyanGhost.x > 555  && cyanGhost.body.velocity.x == speed)
+           {
+               cyanGhost.body.velocity.x = 0;
+               cyanGhost.body.velocity.y = -speed;
+           }
+                 
+           if (cyanGhost.y < 30 && cyanGhost.body.velocity.y == -speed)
+           {
+               cyanGhost.body.velocity.y = 0;
+               cyanGhost.body.velocity.x = -speed;
+           }
+           if(cyanGhost.x < 230 && cyanGhost.body.velocity.x == -speed)
+           {
+               cyanGhost.body.velocity.x = 0;
+               cyanGhost.body.velocity.y = speed;
+           }
+           
+           
+           //YellowGhost Movment!
+           
+           if (yellowGhost.y > 565 && yellowGhost.body.velocity.y == speed)
+           {
+               yellowGhost.body.velocity.y = 0;
+               yellowGhost.body.velocity.x = speed;
+           }
+           if (yellowGhost.x > 760  && yellowGhost.body.velocity.x == speed)
+           {
+               yellowGhost.body.velocity.x = 0;
+               yellowGhost.body.velocity.y = -speed;
+           }
+                 
+           if (yellowGhost.y < 30 && yellowGhost.body.velocity.y == -speed)
+           {
+               yellowGhost.body.velocity.y = 0;
+               yellowGhost.body.velocity.x = -speed;
+           }
+           if(yellowGhost.x < 30 && yellowGhost.body.velocity.x == -speed)
+           {
+               yellowGhost.body.velocity.x = 0;
+               yellowGhost.body.velocity.y = speed;
+           }
+           
+           
+           //LimeGhost Movment!
+           
+           if (limeGhost.y > 565 && limeGhost.body.velocity.y == speed)
+           {
+               limeGhost.body.velocity.y = 0;
+               limeGhost.body.velocity.x = -speed;
+           }
+           if (limeGhost.x < 30  && limeGhost.body.velocity.x == -speed)
+           {
+               limeGhost.body.velocity.x = 0;
+               limeGhost.body.velocity.y = -speed;
+           }
+                 
+           if (limeGhost.y < 30 && limeGhost.body.velocity.y == -speed)
+           {
+               limeGhost.body.velocity.y = 0;
+               limeGhost.body.velocity.x = speed;
+           }
+           if(limeGhost.x > 760 && limeGhost.body.velocity.x == speed)
+           {
+               limeGhost.body.velocity.x = 0;
+               limeGhost.body.velocity.y = speed;
+           }
+        
          // Wall Collision!
         game.physics.arcade.collide(pacmanImage, this.walls);
         
@@ -211,7 +311,7 @@ var game = new Phaser.Game(
         }
         else
         {
-             game.physics.arcade.overlap(pacmanImage, this.panicGhosts, pacmanKills);   
+             game.physics.arcade.overlap(pacmanImage, this.ghosts, pacmanKills);   
         }
         
         //Controls
@@ -240,6 +340,10 @@ var game = new Phaser.Game(
             pacmanImage.body.velocity.y = 130;
         }
     }
+    
+    //Ghost movment!
+  
+  
     
     //Runs when pacman eats food!
     function pacmanEats(pacman, pacmanfood)
@@ -273,29 +377,47 @@ var game = new Phaser.Game(
     {
         superfood.kill();
         
+        panicPink = game.add.sprite(300, 150, 'panicghost', 0, this.ghosts);
+        panicCyan = game.add.sprite(490, 210, 'panicghost', 0, this.ghosts);
+        panicYellow = game.add.sprite(130, 400, 'panicghost', 0, this.ghosts);
+        panicLime = game.add.sprite(300, 200, 'panicghost', 0, this.ghosts);
         
-        pinkGhost = game.add.sprite(300, 150, 'panicghost', 0, this.panicGhosts);
-        cyanGhost = game.add.sprite(490, 210, 'panicghost', 0, this.panicGhosts);
-        yellowGhost = game.add.sprite(130, 400, 'panicghost', 0, this.panicGhosts);
-        limeGhost = game.add.sprite(300, 200, 'panicghost', 0, this.panicGhosts);
+        game.physics.arcade.enable( panicPink, panicCyan, panicYellow, panicLime);
+        game.physics.arcade.overlap(pacmanImage, this.ghosts, pacmanKills);
         
         panicMode = true;
         
+        pinkGhost.kill();
+        cyanGhost.kill();
+        yellowGhost.kill();
+        limeGhost.kill();
+        
         setTimeout(function()
         {
-            panicMode = false;
+            this.ghosts = game.add.group();
+            this.ghosts.enableBody = true;
             
             pinkGhost = game.add.sprite(300, 150, 'pinkghost', 0, this.ghosts);
             cyanGhost = game.add.sprite(490, 210, 'cyanghost', 0, this.ghosts);
             yellowGhost = game.add.sprite(130, 400, 'yellowghost', 0, this.ghosts);
             limeGhost = game.add.sprite(300, 200, 'limeghost', 0, this.ghosts);
             
+            this.ghosts.setAll('body.immovable', true);
+        
+            game.physics.arcade.enable(pinkGhost, cyanGhost, yellowGhost, limeGhost);
+            game.physics.arcade.overlap(pacmanImage, this.ghosts, pacmanDies);
+            
+            panicMode = false;
         }, 10000);
     }
     
-    function pacmanKills(pacman, pinkghost)
+    function pacmanKills(pacman, panicghost)
     {
-        alert("big cat");
+        panicPink.kill();
+    }
+    function enemyMovement()
+    {
+        
     }
 
 
