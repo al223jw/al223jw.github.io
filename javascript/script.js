@@ -1,6 +1,7 @@
 "use strict";
 (function()
 {
+    var winText;
     var gameOver;
     var yorTime;
     var restart = document.getElementById('Restart1');
@@ -295,8 +296,8 @@
         function pacmanEats(pacman, pacmanfood)
         {
             pacmanfood.kill();
-            counter -=0;
-            if(counter <= 1000)
+            counter -=1;
+            if(counter <= 0)
             {
                 winText = game.add.text(game.add.sprite(170, 200, 'wintext'));
                 
