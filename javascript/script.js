@@ -4,7 +4,7 @@
     var winText;
     var gameOver;
     var yorTime;
-    var restart = document.getElementById('Restart1');
+   
     var counterTag;
     
     var pacmanImage;
@@ -40,10 +40,13 @@
         800, 600, Phaser.AUTO, '',
         { preload: preload, create: create, update: update }
         );
-        
+     
         function preload()
         {
             game.load.image('pacman', 'pics/pacman.png');
+            game.load.image('pacmanleft', 'pics/pacmanleft.png');
+            game.load.image('pacmanup', 'pics/pacmanup.png');
+            game.load.image('pacmandown', 'pics/pacmandown.png');
             game.load.image('horizontalwall', 'pics/horizontalwall.png');
             game.load.image('verticalwall', 'pics/verticalwall.png');
             game.load.image('minerwall', 'pics/minerwall.png');
@@ -61,10 +64,19 @@
             game.load.image('superpacman', 'pics/superpacman.png');
             game.load.image('wintext', 'pics/wintext.png');
             game.load.image('restart', 'pics/restart.png');
+            game.load.image('gameover','pics/gameover.png');
         }
         
         function create()
         {
+            var restart = document.getElementById('submit');
+            
+            
+            restart.addEventListener("click", function(e)
+            {  
+            e.preventDefault();
+            location.reload();
+            });
             // Timer
              game.time.events.loop(Phaser.Timer.SECOND, timerfunction);
              
@@ -198,7 +210,8 @@
         {
             if(!pinkAlive)
             {
-                pinkGhost = game.add.sprite(380, 310, 'pinkghost');
+                pinkGhost = game.add.sprite(387, 315, 'pinkghost');
+                pinkGhost.anchor.setTo(0.45, 0.45);
                 pinkAlive = true;
                 game.physics.arcade.enable(pinkGhost);
                 pinkGhost.body.immovable = true;
@@ -206,7 +219,8 @@
             
             if(!cyanAlive)
             {
-                cyanGhost = game.add.sprite(410, 310, 'cyanghost');
+                cyanGhost = game.add.sprite(416, 315, 'cyanghost');
+                cyanGhost.anchor.setTo(0.45, 0.45);
                 cyanAlive = true;
                 game.physics.arcade.enable(cyanGhost);
                  cyanGhost.body.immovable = true;
@@ -214,18 +228,20 @@
            
             if(!yellowAlive)
             {
-                yellowGhost = game.add.sprite(410, 270, 'yellowghost');
+                yellowGhost = game.add.sprite(416, 280, 'yellowghost');
+                yellowGhost.anchor.setTo(0.45, 0.45);
                 yellowAlive = true;
                 game.physics.arcade.enable(yellowGhost);
-                 yellowGhost.body.immovable = true;
+                yellowGhost.body.immovable = true;
             }
             
             if(!limeAlive)
             {
-                limeGhost = game.add.sprite(380, 270, 'limeghost');
+                limeGhost = game.add.sprite(387, 280, 'limeghost');
+                limeGhost.anchor.setTo(0.45, 0.45);
                 limeAlive = true;
                 game.physics.arcade.enable(limeGhost);
-                 limeGhost.body.immovable = true;
+                limeGhost.body.immovable = true;
             }
             setTimeout(function()
             {
@@ -238,6 +254,7 @@
         }
         function update()
         {
+            console.log(pacmanImage.y, pacmanImage.x);
             GhostMovment();
            
              // Wall Collision!
@@ -272,23 +289,24 @@
                 
             if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
             {
-                pacmanImage.body.velocity.x = -300;
-                pacmanImage.scale.x = -1;
-         
+                pacmanImage.loadTexture('pacmanleft');
+                pacmanImage.body.velocity.x = -105;
             }
             else if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
             {
-                pacmanImage.body.velocity.x = 300;
-                pacmanImage.scale.x = 1;
+                pacmanImage.loadTexture('pacman');
+                pacmanImage.body.velocity.x = 105;
             }
             
             if(game.input.keyboard.isDown(Phaser.Keyboard.UP))
             {
-                pacmanImage.body.velocity.y = -300;
+                pacmanImage.loadTexture('pacmanup');
+                pacmanImage.body.velocity.y = -105;
             }
             else if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
             {
-                pacmanImage.body.velocity.y = 300;
+                pacmanImage.loadTexture('pacmandown');
+                pacmanImage.body.velocity.y = 105;
             }
         }
         
@@ -299,13 +317,14 @@
             counter -=1;
             if(counter <= 0)
             {
+                timerfunction();
+                
                 winText = game.add.text(game.add.sprite(170, 200, 'wintext'));
                 
-              //  restart = game.add.text(game.add.sprite(170, 365, 'restart'));
-                //restart.anchor.setTo(0.5, 0.5);
-                
-                yorTime = game.add.text(520, 370, 'time', { font: "30px Arial", fill: "#ffffff", align: "center", backgroundColor: "000000", width: 400, height: 400 });
+                yorTime = game.add.text(400, 400, counterTag.innerHTML, { font: "50px Arial", fill: "#ffffff", align: "center", backgroundColor: "000000", width: 400, height: 400 });
                 yorTime.anchor.setTo(0.5, 0.5);
+                
+                game.paused = true;
             }
         }
         
@@ -313,7 +332,7 @@
         {
             pacmanImage.kill();
             
-            pacmanImage = game.add.sprite(770, 570, 'pacman');
+            pacmanImage = game.add.sprite(770, 570, 'pacman');  
             pacmanImage.anchor.setTo(.5, .5);
             game.physics.arcade.enable(pacmanImage);
         
@@ -321,11 +340,10 @@
             
             if(pacmanLife == 0)
             {
-                gameOver = game.add.text(game.world.centerX, game.world.centerY, "GAME OVER!!", { font: "65px Arial", fill: "#66FFCC", align: "center" });
+                gameOver = game.add.text(game.add.sprite(147, 200, 'gameover'));
                 gameOver.anchor.setTo(0.5, 0.5);
                 
-                restart = game.add.text(game.world.centerX, game.world.centerY, "GAME OVER!!");
-                restart.anchor.setTo(0.5, 0.5);
+                game.paused = true;
             }
         }
         
@@ -385,12 +403,12 @@
         {
                 //PinKGhost movment!
                 
-                if (pinkGhost.y > 500 && pinkGhost.body.velocity.y == speed)
+                if (pinkGhost.y > 505 && pinkGhost.body.velocity.y == speed)
                 {
                    pinkGhost.body.velocity.y = 0;
                    pinkGhost.body.velocity.x = -speed;
                 }
-                if (pinkGhost.x < 230  && pinkGhost.body.velocity.x == -speed)
+                if (pinkGhost.x < 235  && pinkGhost.body.velocity.x == -speed)
                 {
                    pinkGhost.body.velocity.x = 0;
                    pinkGhost.body.velocity.y = -speed;
@@ -401,19 +419,19 @@
                    pinkGhost.body.velocity.y = 0;
                    pinkGhost.body.velocity.x = speed;
                 }
-                if(pinkGhost.x > 550 && pinkGhost.body.velocity.x == speed)
+                if(pinkGhost.x > 563 && pinkGhost.body.velocity.x == speed)
                 {
                    pinkGhost.body.velocity.x = 0;
                    pinkGhost.body.velocity.y = speed;
                 }
                 
                 //CyanGhost Movment!
-                if (cyanGhost.y > 500 && cyanGhost.body.velocity.y == speed)
+                if (cyanGhost.y > 505 && cyanGhost.body.velocity.y == speed)
                 {
                    cyanGhost.body.velocity.y = 0;
                    cyanGhost.body.velocity.x = speed;
                 }
-                if (cyanGhost.x > 555  && cyanGhost.body.velocity.x == speed)
+                if (cyanGhost.x > 563  && cyanGhost.body.velocity.x == speed)
                 {
                    cyanGhost.body.velocity.x = 0;
                    cyanGhost.body.velocity.y = -speed;
@@ -424,7 +442,7 @@
                    cyanGhost.body.velocity.y = 0;
                    cyanGhost.body.velocity.x = -speed;
                 }
-                if(cyanGhost.x < 230 && cyanGhost.body.velocity.x == -speed)
+                if(cyanGhost.x < 235 && cyanGhost.body.velocity.x == -speed)
                 {
                    cyanGhost.body.velocity.x = 0;
                    cyanGhost.body.velocity.y = speed;
@@ -438,7 +456,7 @@
                    yellowGhost.body.velocity.y = 0;
                    yellowGhost.body.velocity.x = speed;
                 }
-                if (yellowGhost.x > 760  && yellowGhost.body.velocity.x == speed)
+                if (yellowGhost.x > 765  && yellowGhost.body.velocity.x == speed)
                 {
                    yellowGhost.body.velocity.x = 0;
                    yellowGhost.body.velocity.y = -speed;
@@ -462,7 +480,7 @@
                    limeGhost.body.velocity.y = 0;
                    limeGhost.body.velocity.x = -speed;
                 }
-                if (limeGhost.x < 30  && limeGhost.body.velocity.x == -speed)
+                if (limeGhost.x < 33  && limeGhost.body.velocity.x == -speed)
                 {
                    limeGhost.body.velocity.x = 0;
                    limeGhost.body.velocity.y = -speed;
@@ -473,7 +491,7 @@
                    limeGhost.body.velocity.y = 0;
                    limeGhost.body.velocity.x = speed;
                 }
-                if(limeGhost.x > 760 && limeGhost.body.velocity.x == speed)
+                if(limeGhost.x > 765 && limeGhost.body.velocity.x == speed)
                 {
                    limeGhost.body.velocity.x = 0;
                    limeGhost.body.velocity.y = speed;
@@ -484,11 +502,6 @@
         {
             counterTag = document.getElementById('counterTag');
             timer++;
-            counterTag.innerHTML = "Time:" + timer + "Life:" + pacmanLife;
+            counterTag.innerHTML = "Time:" + timer + "      Life:" + pacmanLife;
         }
-        
-        restart.onclick = function()
-        {
-            location.reload();
-        };
 })();
